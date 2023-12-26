@@ -24,6 +24,9 @@ const config: Config = {
       colors: {
         icons_color: "#7f829e",
         placeholder_color: "#2c2d3c"
+      },
+      borderWidth: {
+        1: "1px"
       }
     }
   },

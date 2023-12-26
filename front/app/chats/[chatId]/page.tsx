@@ -3,7 +3,6 @@
 // import { useEffect, useRef, useState } from "react";
 
 import Header from "../../components/MainChat/Header/Header";
-
 import Footer from "../../components/MainChat/Footer/Footer";
 
 export default function Chat() {

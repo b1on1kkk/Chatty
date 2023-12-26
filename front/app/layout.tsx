@@ -2,11 +2,6 @@
 
 import "./globals.css";
 
-// components
-import LeftAsideMenu from "./components/LeftAsideMenu/LeftAsideMenu";
-import ShowLessButton from "./components/LeftAsideMenu/ShowLessButton/ShowLessButton";
-//
-
 // redux
 import ReduxProvider from "./redux/provider";
 //

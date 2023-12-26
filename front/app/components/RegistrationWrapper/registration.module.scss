@@ -1,0 +1,7 @@
+.registration {
+  box-shadow: rgba(75, 0, 130, 0.3) 0px 1px 1px 0px inset,
+    rgba(75, 0, 130, 0.3) 0px 50px 100px -20px,
+    rgba(75, 0, 130, 0.3) 0px 30px 60px -30px;
+
+  @apply w-[700px] bg-gray-800 rounded-lg py-16 flex flex-col px-36;
+}
