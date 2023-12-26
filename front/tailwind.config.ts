@@ -17,10 +17,17 @@ const config: Config = {
         "420": "420px",
         "350": "350px",
         "110": "110px"
+      },
+      padding: {
+        send_icon: "10px"
+      },
+      colors: {
+        icons_color: "#7f829e",
+        placeholder_color: "#2c2d3c"
       }
     }
   },
-  plugins: []
+  plugins: [require("tailwind-scrollbar")]
 };
 
 export default config;
