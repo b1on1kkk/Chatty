@@ -1,6 +1,14 @@
-export default function ChatCard() {
+import { usePathname } from "next/navigation";
+
+export default function ChatCard({ idx }: { idx: number }) {
+  const pathname = usePathname().split("/");
+
   return (
-    <div className="flex gap-8 overflow-hidden hover:bg-[#0c111c] px-5 py-6 rounded-l-full opacity-70 hover:opacity-100 transition-all duration-200 ease-in">
+    <div
+      className={`flex gap-8 overflow-hidden hover:bg-[#0c111c] ${
+        pathname[pathname.length - 1] === idx.toString() ? "bg-[#0c111c]" : ""
+      } px-5 py-6 rounded-l-full transition-all duration-200 ease-in`}
+    >
       <div className="w-12 h-12 bg-gray-500 rounded-md relative">
         <div className="w-4 h-4 bg-gray-800 rounded-full absolute right-0 bottom-0 top-7 left-10 flex items-center justify-center">
           {/* turn on animation later */}

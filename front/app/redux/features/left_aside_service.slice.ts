@@ -5,13 +5,15 @@ interface TAsideMenuService {
   hoverCloseButton: boolean;
   searchInputFocus: boolean;
   enterMessageInputFocus: boolean;
+  addingFriends: boolean;
 }
 
 const initialState: TAsideMenuService = {
   showLess: false,
   hoverCloseButton: false,
   searchInputFocus: false,
-  enterMessageInputFocus: false
+  enterMessageInputFocus: false,
+  addingFriends: false
 };
 
 export const AsideMenuService = createSlice({
@@ -41,6 +43,12 @@ export const AsideMenuService = createSlice({
         ...state,
         enterMessageInputFocus: action.payload
       };
+    },
+    setAddingFriends: (state, action) => {
+      return {
+        ...state,
+        addingFriends: action.payload
+      };
     }
   }
 });
@@ -49,6 +57,6 @@ export const {
   setShowLess,
   setHoverCloseButton,
   setSearchInputFocus,
-  setEnterMessageInputFocus
+  setEnterMessageInputFocus,
+  setAddingFriends
 } = AsideMenuService.actions;
-export default AsideMenuService.reducer;

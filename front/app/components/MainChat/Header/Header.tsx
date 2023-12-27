@@ -7,7 +7,6 @@ export default function Header() {
       <AvatarAndRole name="Dushane Daniel" role="Project manager" />
       <div className="flex gap-8">
         <Icon icon_name="Phone" />
-        <Icon icon_name="UserPlus" />
       </div>
     </header>
   );

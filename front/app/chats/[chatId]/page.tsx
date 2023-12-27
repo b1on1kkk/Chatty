@@ -5,7 +5,12 @@
 import Header from "../../components/MainChat/Header/Header";
 import Footer from "../../components/MainChat/Footer/Footer";
 
+// import { useSelector } from "react-redux";
+// import { RootState } from "@/app/redux/store";
+
 export default function Chat() {
+  // const state = useSelector((state: RootState) => state.aside_menu_service);
+
   // const ref = useRef<null | HTMLDivElement>(null);
   // const [messageWidth, setMessageWidth] = useState<number>(0);
 

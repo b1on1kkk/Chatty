@@ -1,7 +1,10 @@
 "use client";
 
+import axios, { AxiosError } from "axios";
+
 import { useReducer, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // components
 import { MessageCircle } from "lucide-react";
@@ -20,13 +23,15 @@ import { SetValidity } from "../utils/SetValidity";
 //
 
 export default function LogIn() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   const [registrationFromState, setRegistrationFrom] = useReducer(
     RegistrationUserFormReducer,
     {
-      name: "",
-      lastname: "",
+      name: "default",
+      lastname: "default",
       email: "",
       password: ""
     }
@@ -41,11 +46,26 @@ export default function LogIn() {
     }
   );
 
-  function Submit(e: React.FormEvent<HTMLFormElement>) {
+  async function Submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (CheckEmptyFields(Object.values(registrationFromState))) {
-      console.log("yep");
+      try {
+        await axios.post("http://localhost:2000/log_in", {
+          email: registrationFromState.email,
+          password: registrationFromState.password
+        });
+
+        router.push("/chats");
+      } catch (error) {
+        const AxiosError = error as AxiosError;
+        const textError = AxiosError.response?.data as string;
+        setError(textError);
+
+        setTimeout(() => {
+          setError("");
+        }, 2500);
+      }
     } else {
       SetValidity(Object.values(registrationFromState), setFormValidityData);
     }
@@ -121,6 +141,9 @@ export default function LogIn() {
               Log In
             </button>
           </form>
+          {error && (
+            <div className="mt-3 text-xs font-bold text-red-500">{error}</div>
+          )}
         </div>
       </div>
       <div className="text-center text-sm">

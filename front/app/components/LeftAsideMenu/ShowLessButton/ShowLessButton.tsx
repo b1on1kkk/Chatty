@@ -6,6 +6,8 @@ import {
   setHoverCloseButton
 } from "@/app/redux/features/left_aside_service.slice";
 
+import { setAddingFriends } from "@/app/redux/features/left_aside_service.slice";
+
 export default function ShowLessButton() {
   const dispatch = useDispatch<AppDispatch>();
   const state = useSelector((state: RootState) => state.aside_menu_service);
@@ -19,7 +21,11 @@ export default function ShowLessButton() {
       onMouseLeave={() =>
         dispatch(setHoverCloseButton(!state.hoverCloseButton))
       }
-      onClick={() => dispatch(setShowLess(!state.showLess))}
+      onClick={() => {
+        if (state.addingFriends)
+          dispatch(setAddingFriends(!state.addingFriends));
+        dispatch(setShowLess(!state.showLess));
+      }}
     >
       <div className="w-1 h-5 bg-white rounded-lg"></div>
     </button>

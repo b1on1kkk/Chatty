@@ -8,9 +8,10 @@ interface TInput {
   text_size: string;
   show_send_icon: boolean;
   placeholder: string;
+  focus_status: boolean;
   onFocus: () => void;
   onBlur: () => void;
-  focus_status: boolean;
+  getUsers: () => void;
 }
 
 function Submit(event: React.FormEvent<HTMLFormElement>) {
@@ -22,9 +23,10 @@ export default function Input({
   text_size,
   show_send_icon,
   placeholder,
+  focus_status,
   onFocus,
   onBlur,
-  focus_status
+  getUsers
 }: TInput) {
   return (
     <div
@@ -47,6 +49,7 @@ export default function Input({
           onFocus={onFocus}
           onBlur={onBlur}
         />
+        {!show_send_icon && <Icon icon_name="UserPlus" onClick={getUsers} />}
         {show_send_icon && (
           <button
             className={`p-send_icon bg-[#0e1119] rounded-full flex items-center justify-center hover:bg-indigo-500 hover:text-white text-placeholder_color transition-all duration-200 ease-in ${

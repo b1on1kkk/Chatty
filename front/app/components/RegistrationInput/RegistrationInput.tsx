@@ -29,10 +29,6 @@ export default function RegistrationInput({
   showPassword,
   setShowPassword
 }: TRegistrationInput) {
-  console.log(showPassword);
-
-  console.log(setShowPassword);
-
   return (
     <div className="flex flex-col gap-3 justify-center">
       <div

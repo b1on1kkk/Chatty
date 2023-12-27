@@ -1,9 +1,11 @@
 "use client";
 
-import { v4 as uuidv4 } from "uuid";
-
 import { useReducer, useState } from "react";
 import Link from "next/link";
+
+import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 // components
 import RegistrationWrapper from "../components/RegistrationWrapper/RegistrationWrapper";
@@ -21,6 +23,7 @@ import { SetValidity } from "../utils/SetValidity";
 //
 
 export default function Registration() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const [registrationFromState, setRegistrationFrom] = useReducer(
@@ -42,13 +45,27 @@ export default function Registration() {
     }
   );
 
-  function Submit(e: React.FormEvent<HTMLFormElement>) {
+  async function Submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (CheckEmptyFields(Object.values(registrationFromState))) {
       const unique_key = uuidv4();
 
-      console.log("yep");
+      try {
+        await axios.post("http://localhost:2000/sign_up", {
+          name: registrationFromState.name,
+          lastname: registrationFromState.lastname,
+          email: registrationFromState.email,
+          password: registrationFromState.password,
+          role: "Project manager",
+          avatar: "",
+          hash_key: unique_key
+        });
+
+        router.push("/chats");
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       SetValidity(Object.values(registrationFromState), setFormValidityData);
     }
