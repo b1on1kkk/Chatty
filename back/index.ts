@@ -133,6 +133,19 @@ app.get("/user", (req: Request, res: Response) => {
   );
 });
 
+app.get("/friends", (req: Request, res: Response) => {
+  const { user_id } = req.query;
+
+  db.query(
+    "SELECT `name`, `lastname`, `email`, `role`, `avatar`, `friend_id` FROM users JOIN friends ON users.id = friends.friend_id WHERE friends.user_id = ?",
+    [user_id],
+    (error: Error, result: any) => {
+      if (error) return res.status(500).send(error);
+      return res.status(200).json(result);
+    }
+  );
+});
+
 app.listen(2000, () => {
   console.log(`Server is running at http://localhost:${2000}`);
 });

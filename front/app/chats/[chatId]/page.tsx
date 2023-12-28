@@ -1,14 +1,35 @@
 "use client";
 
-// import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 
+// components
 import Header from "../../components/MainChat/Header/Header";
 import Footer from "../../components/MainChat/Footer/Footer";
+//
 
-// import { useSelector } from "react-redux";
-// import { RootState } from "@/app/redux/store";
+// redux
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
+import { TFriend } from "@/app/redux/features/get_friends.slice";
+//
+
+// utils
+import { FindFriend } from "@/app/utils/FindFriend";
+//
 
 export default function Chat() {
+  const [choosenFriend, setChoosenFriend] = useState<TFriend | null>(null);
+
+  const pathname = usePathname().split("/");
+  const chosen_user_id_chat = pathname[pathname.length - 1];
+
+  const friends = useSelector((state: RootState) => state.get_friends.friends);
+
+  useEffect(() => {
+    setChoosenFriend(FindFriend(friends, chosen_user_id_chat));
+  }, [chosen_user_id_chat, friends]);
+
   // const state = useSelector((state: RootState) => state.aside_menu_service);
 
   // const ref = useRef<null | HTMLDivElement>(null);
@@ -26,11 +47,15 @@ export default function Chat() {
 
   return (
     <>
-      <Header />
+      <Header
+        name={choosenFriend?.name ? choosenFriend.name : ""}
+        lastname={choosenFriend?.lastname ? choosenFriend.lastname : ""}
+        role={choosenFriend?.role ? choosenFriend.role : ""}
+      />
       <main className="flex-1 px-16 flex flex-col overflow-auto pt-5 scrollbar-thin scrollbar-thumb-gray-700">
         {fakeArray.map((_, idx) => {
           return (
-            <>
+            <div key={idx}>
               {/* our message */}
               <div className="flex flex-col items-end gap-3">
                 <div className="flex items-end gap-3">
@@ -66,7 +91,7 @@ export default function Chat() {
                 <div className="text-xs text-[#7f829e]">4:11 pm</div>
               </div>
               {/*  */}
-            </>
+            </div>
           );
         })}
       </main>

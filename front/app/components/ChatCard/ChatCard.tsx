@@ -1,6 +1,12 @@
 import { usePathname } from "next/navigation";
 
-export default function ChatCard({ idx }: { idx: number }) {
+interface TChatCard {
+  idx: number;
+  name: string;
+  lastname: string;
+}
+
+export default function ChatCard({ idx, name, lastname }: TChatCard) {
   const pathname = usePathname().split("/");
 
   return (
@@ -19,10 +25,15 @@ export default function ChatCard({ idx }: { idx: number }) {
 
       <div className="flex flex-col w-full flex-1 gap-1">
         <div className="flex">
-          <h2 className="font-medium flex-1">Andrei Masharin</h2>
+          <h2 className="font-medium flex-1">
+            {name} {lastname}
+          </h2>
           <span className="text-sm text-[#7f829e]">9:10 am</span>
         </div>
-        <div className="text-sm text-[#7f829e]">Lorem ipsum dolor sit amet</div>
+        <div className="text-sm text-[#7f829e]">
+          {/* future last message */}
+          Lorem ipsum dolor sit amet
+        </div>
       </div>
     </div>
   );

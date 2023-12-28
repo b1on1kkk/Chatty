@@ -9,15 +9,22 @@ import MakingFriendsBlock from "../MakingFriendsBlock/MakingFriendsBlock";
 //
 
 // redux
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/redux/store";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/app/redux/store";
+import { useEffect } from "react";
+import { getFriends } from "@/app/redux/features/get_friends.slice";
 //
 
 export default function LeftAsideMenu() {
   const state = useSelector((state: RootState) => state.aside_menu_service);
   const users = useSelector((state: RootState) => state.get_users.user);
+  const user = useSelector((state: RootState) => state.get_user.user);
+  const friends = useSelector((state: RootState) => state.get_friends.friends);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const fakeArray = new Array(3).fill(0);
+  useEffect(() => {
+    dispatch(getFriends(user.id));
+  }, [dispatch, user.id]);
 
   return (
     <aside
@@ -33,10 +40,14 @@ export default function LeftAsideMenu() {
 
       <main className="overflow-auto pl-3 flex-1 w-420 scrollbar-none scrollbar-thumb-gray-700 hover:scrollbar-thin transiton-all duration-200 ease-in flex flex-col gap-2">
         {/* future friends */}
-        {fakeArray.map((_, idx) => {
+        {friends.map((friend, idx) => {
           return (
-            <Link href={`/chats/${idx + 1}`} key={idx}>
-              <ChatCard idx={idx + 1} />
+            <Link href={`/chats/${friend.friend_id}`} key={idx}>
+              <ChatCard
+                idx={friend.friend_id}
+                name={friend.name}
+                lastname={friend.lastname}
+              />
             </Link>
           );
         })}

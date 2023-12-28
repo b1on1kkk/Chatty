@@ -3,6 +3,7 @@ import axios from "axios";
 
 interface User {
   user: {
+    id: number;
     name: string;
     lastname: string;
     email: string;
@@ -12,7 +13,7 @@ interface User {
 }
 
 const initialState: User = {
-  user: { name: "", lastname: "", email: "", avatar: "", role: "" }
+  user: { id: 0, name: "", lastname: "", email: "", avatar: "", role: "" }
 };
 
 export const getUser = createAsyncThunk("User/getUser", async (_, thunkAPI) => {
