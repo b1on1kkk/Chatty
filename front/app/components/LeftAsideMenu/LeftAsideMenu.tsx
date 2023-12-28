@@ -36,22 +36,30 @@ export default function LeftAsideMenu() {
     >
       <Header showLess={state.showLess} />
 
-      {state.addingFriends && <MakingFriendsBlock users={users} />}
+      {state.addingFriends && (
+        <MakingFriendsBlock users={users} friends={friends} user={user} />
+      )}
 
       <main className="overflow-auto pl-3 flex-1 w-420 scrollbar-none scrollbar-thumb-gray-700 hover:scrollbar-thin transiton-all duration-200 ease-in flex flex-col gap-2">
-        {/* future friends */}
-        {friends.map((friend, idx) => {
-          return (
-            <Link href={`/chats/${friend.friend_id}`} key={idx}>
-              <ChatCard
-                idx={friend.friend_id}
-                name={friend.name}
-                lastname={friend.lastname}
-              />
-            </Link>
-          );
-        })}
-        {/*  */}
+        {friends.length > 0 ? (
+          <>
+            {friends.map((friend, idx) => {
+              return (
+                <Link href={`/chats/${friend.friend_id}`} key={idx}>
+                  <ChatCard
+                    idx={friend.friend_id}
+                    name={friend.name}
+                    lastname={friend.lastname}
+                  />
+                </Link>
+              );
+            })}
+          </>
+        ) : (
+          <div className="h-full flex justify-center items-center">
+            Add friends to start chatting!
+          </div>
+        )}
       </main>
     </aside>
   );

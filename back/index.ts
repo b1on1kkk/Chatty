@@ -94,6 +94,28 @@ app.post("/log_in", (req: Request, res: Response) => {
   );
 });
 
+app.post("/add_to_friend", (req: Request, res: Response) => {
+  const { user_id, friend_id } = req.body;
+
+  db.query(
+    "INSERT INTO `friends` (`user_id`, `friend_id`) VALUES (?, ?)",
+    [user_id, friend_id],
+    (error: Error) => {
+      if (error) return res.status(500).send("Server error occur :(");
+
+      db.query(
+        "INSERT INTO `friends` (`user_id`, `friend_id`) VALUES (?, ?)",
+        [friend_id, user_id],
+        (error: Error) => {
+          if (error) return res.status(500).send("Server error occur :(");
+        }
+      );
+
+      return res.status(200).send("User added!");
+    }
+  );
+});
+
 // check if user is logged in and has a session
 app.get("/session_status", (req: Request, res: Response) => {
   console.log(req.session);

@@ -1,15 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+import { UsersInf } from "./get_users.slice";
+
 interface User {
-  user: {
-    id: number;
-    name: string;
-    lastname: string;
-    email: string;
-    avatar: string;
-    role: string;
-  };
+  user: UsersInf;
 }
 
 const initialState: User = {
