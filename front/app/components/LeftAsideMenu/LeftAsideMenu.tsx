@@ -80,6 +80,7 @@ export default function LeftAsideMenu() {
                         name={chat.name}
                         lastname={chat.lastname}
                         onlineUsers={state.onlineUsers}
+                        avatar={chat.avatar}
                       />
                     </Link>
                   );

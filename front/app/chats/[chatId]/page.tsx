@@ -58,8 +58,6 @@ export default function Chat() {
     ]);
   });
 
-  console.log(messages);
-
   return (
     <>
       <Header onlineUsers={onlineUsers} />

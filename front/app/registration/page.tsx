@@ -20,6 +20,7 @@ import {
 import { FormValidityReducer } from "../utils/FormValidityReducer";
 import { CheckEmptyFields } from "../utils/CheckEmptyFields";
 import { SetValidity } from "../utils/SetValidity";
+import { RandomInt } from "../utils/Random";
 //
 
 export default function Registration() {
@@ -58,7 +59,10 @@ export default function Registration() {
           email: registrationFromState.email,
           password: registrationFromState.password,
           role: "Project manager",
-          avatar: "",
+          avatar: `http://localhost:2000/avatars?avatar_name=${RandomInt(
+            1,
+            9
+          )}.png`,
           hash_key: unique_key
         });
 

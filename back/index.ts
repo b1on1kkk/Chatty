@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from "express";
+import path from "path";
 
 const app: Express = express();
 
@@ -182,6 +183,16 @@ app.get("/users", (req: Request, res: Response) => {
       return res.status(200).json(result);
     }
   );
+});
+
+app.get("/avatars", (req: Request, res: Response) => {
+  const { avatar_name } = req.query;
+
+  try {
+    res.sendFile(path.join(__dirname, "avatars", `${avatar_name}`));
+  } catch (error) {
+    res.send(error);
+  }
 });
 
 server.listen(2000, () => {
