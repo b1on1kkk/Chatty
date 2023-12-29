@@ -1,22 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export interface UsersInf {
-  id: number;
-  name: string;
-  lastname: string;
-  email: string;
-  avatar: string;
-  role: string;
-}
+import { UsersInf } from "./get_user.slice";
 
-interface Users {
-  user: UsersInf[];
+interface TUsers {
+  users: UsersInf[];
   status: "pending" | "fulfilled";
 }
 
-const initialState: Users = {
-  user: [],
+const initialState: TUsers = {
+  users: [],
   status: "pending"
 };
 
@@ -39,10 +32,10 @@ export const Users = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getUsers.fulfilled, (state, action) => {
-      state.user = action.payload.data;
+      state.users = action.payload.data;
       state.status = "fulfilled";
     });
-    builder.addCase(getUsers.pending, (state, _) => {
+    builder.addCase(getUsers.pending, (state, action) => {
       state.status = "pending";
     });
   }

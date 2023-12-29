@@ -5,7 +5,11 @@ import Input from "../../Input/Input";
 
 import { setEnterMessageInputFocus } from "@/app/redux/features/left_aside_service.slice";
 
-export default function Footer() {
+export default function Footer({
+  Submit
+}: {
+  Submit: (e: React.FormEvent<HTMLFormElement>, text: string) => void;
+}) {
   const state = useSelector((state: RootState) => state.aside_menu_service);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -23,6 +27,7 @@ export default function Footer() {
           dispatch(setEnterMessageInputFocus(!state.enterMessageInputFocus))
         }
         focus_status={state.enterMessageInputFocus}
+        onSubmit={(e, text) => Submit(e, text)}
       />
     </footer>
   );

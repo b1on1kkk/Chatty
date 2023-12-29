@@ -6,8 +6,6 @@ import {
   setHoverCloseButton
 } from "@/app/redux/features/left_aside_service.slice";
 
-import { setAddingFriends } from "@/app/redux/features/left_aside_service.slice";
-
 export default function ShowLessButton() {
   const dispatch = useDispatch<AppDispatch>();
   const state = useSelector((state: RootState) => state.aside_menu_service);
@@ -22,8 +20,6 @@ export default function ShowLessButton() {
         dispatch(setHoverCloseButton(!state.hoverCloseButton))
       }
       onClick={() => {
-        if (state.addingFriends)
-          dispatch(setAddingFriends(!state.addingFriends));
         dispatch(setShowLess(!state.showLess));
       }}
     >

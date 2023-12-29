@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Icon from "../Icon/Icon";
 import { Send } from "lucide-react";
 
@@ -11,11 +12,7 @@ interface TInput {
   focus_status: boolean;
   onFocus: () => void;
   onBlur: () => void;
-  getUsers: () => void;
-}
-
-function Submit(event: React.FormEvent<HTMLFormElement>) {
-  event.preventDefault();
+  onSubmit: (e: React.FormEvent<HTMLFormElement>, msg: string) => void;
 }
 
 export default function Input({
@@ -26,8 +23,10 @@ export default function Input({
   focus_status,
   onFocus,
   onBlur,
-  getUsers
+  onSubmit
 }: TInput) {
+  const [text, setText] = useState<string>("");
+
   return (
     <div
       className={`bg-black flex rounded-full items-center ${
@@ -39,7 +38,13 @@ export default function Input({
       } transition-all duration-200 ease-in`}
     >
       <Icon icon_name={left_icon_name} />
-      <form className="flex w-full" onSubmit={Submit}>
+      <form
+        className="flex w-full"
+        onSubmit={(e) => {
+          onSubmit(e, text);
+          setText("");
+        }}
+      >
         <input
           type="text"
           className={`focus:outline-none bg-black ml-2 w-full placeholder:${text_size} ${text_size} placeholder:text-placeholder_color placeholder:font-semibold ${
@@ -48,16 +53,14 @@ export default function Input({
           placeholder={placeholder}
           onFocus={onFocus}
           onBlur={onBlur}
+          onChange={(e) => setText(e.target.value)}
+          value={text}
         />
-        {!show_send_icon && <Icon icon_name="UserPlus" onClick={getUsers} />}
         {show_send_icon && (
           <button
             className={`p-send_icon bg-[#0e1119] rounded-full flex items-center justify-center hover:bg-indigo-500 hover:text-white text-placeholder_color transition-all duration-200 ease-in ${
               focus_status ? "bg-indigo-500 text-white" : ""
             }`}
-            onClick={() => {
-              console.log("send!");
-            }}
           >
             <Send />
           </button>

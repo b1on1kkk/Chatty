@@ -1,11 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+import { SocketPerson } from "@/app/interfaces/interfaces";
+
 interface TAsideMenuService {
   showLess: boolean;
   hoverCloseButton: boolean;
   searchInputFocus: boolean;
   enterMessageInputFocus: boolean;
-  addingFriends: boolean;
+  chosenChat: number;
+  onlineUsers: SocketPerson[];
 }
 
 const initialState: TAsideMenuService = {
@@ -13,7 +16,8 @@ const initialState: TAsideMenuService = {
   hoverCloseButton: false,
   searchInputFocus: false,
   enterMessageInputFocus: false,
-  addingFriends: false
+  chosenChat: 0,
+  onlineUsers: []
 };
 
 export const AsideMenuService = createSlice({
@@ -44,10 +48,16 @@ export const AsideMenuService = createSlice({
         enterMessageInputFocus: action.payload
       };
     },
-    setAddingFriends: (state, action) => {
+    setChosenChat: (state, action) => {
       return {
         ...state,
-        addingFriends: action.payload
+        chosenChat: action.payload
+      };
+    },
+    setOnlineUsers: (state, action) => {
+      return {
+        ...state,
+        onlineUsers: action.payload
       };
     }
   }
@@ -58,5 +68,6 @@ export const {
   setHoverCloseButton,
   setSearchInputFocus,
   setEnterMessageInputFocus,
-  setAddingFriends
+  setChosenChat,
+  setOnlineUsers
 } = AsideMenuService.actions;

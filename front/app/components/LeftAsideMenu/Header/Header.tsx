@@ -6,8 +6,6 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/app/redux/store";
 import { setSearchInputFocus } from "@/app/redux/features/left_aside_service.slice";
-import { getUsers } from "@/app/redux/features/get_users.slice";
-import { setAddingFriends } from "@/app/redux/features/left_aside_service.slice";
 import { getUser } from "@/app/redux/features/get_user.slice";
 //
 
@@ -21,15 +19,6 @@ export default function Header({ showLess }: { showLess: boolean }) {
   const state = useSelector((state: RootState) => state.aside_menu_service);
   const user = useSelector((state: RootState) => state.get_user.user);
   const dispatch = useDispatch<AppDispatch>();
-
-  function getUsersByClick() {
-    if (state.addingFriends) {
-      dispatch(setAddingFriends(!state.addingFriends));
-      return;
-    }
-    dispatch(getUsers());
-    dispatch(setAddingFriends(!state.addingFriends));
-  }
 
   useEffect(() => {
     dispatch(getUser());
@@ -67,7 +56,7 @@ export default function Header({ showLess }: { showLess: boolean }) {
             onBlur={() =>
               dispatch(setSearchInputFocus(!state.searchInputFocus))
             }
-            getUsers={getUsersByClick}
+            onSubmit={() => {}}
           />
         </div>
       )}

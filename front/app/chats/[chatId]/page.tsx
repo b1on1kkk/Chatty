@@ -1,101 +1,104 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
-
 // components
 import Header from "../../components/MainChat/Header/Header";
 import Footer from "../../components/MainChat/Footer/Footer";
 //
 
-// redux
+import { socket } from "@/app/components/LeftAsideMenu/LeftAsideMenu";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-import { TFriend } from "@/app/redux/features/get_friends.slice";
-//
+import { useState } from "react";
 
-// utils
-import { FindFriend } from "@/app/utils/FindFriend";
-//
+// async function CreateRoom(user_id: number, cb: (key: string) => void) {
+//   console.log(user_id);
+
+//   try {
+//     const res = await axios.get(
+//       `http://localhost:2000/chat_id?user_id=${user_id}`
+//     );
+
+//     cb(res.data);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 export default function Chat() {
-  const [choosenFriend, setChoosenFriend] = useState<TFriend | null>(null);
+  const onlineUsers = useSelector(
+    (state: RootState) => state.aside_menu_service.onlineUsers
+  );
+  const user = useSelector((state: RootState) => state.get_user.user);
 
-  const pathname = usePathname().split("/");
-  const chosen_user_id_chat = pathname[pathname.length - 1];
+  const [messages, setMessages] = useState<
+    { message: string; sender_id: number }[]
+  >([]);
 
-  const friends = useSelector((state: RootState) => state.get_friends.friends);
+  function Submit(e: React.FormEvent<HTMLFormElement>, text: string) {
+    e.preventDefault();
 
-  useEffect(() => {
-    setChoosenFriend(FindFriend(friends, chosen_user_id_chat));
-  }, [chosen_user_id_chat, friends]);
-
-  // const state = useSelector((state: RootState) => state.aside_menu_service);
-
-  // const ref = useRef<null | HTMLDivElement>(null);
-  // const [messageWidth, setMessageWidth] = useState<number>(0);
+    socket.emit("clientMessage", {
+      msg: text,
+      room: "1",
+      sender_id: user.id
+    });
+  }
 
   // useEffect(() => {
-  //   if (ref.current?.innerText) {
-  //     setMessageWidth(ref.current?.innerText.length * 2);
-  //   }
-  // }, [ref]);
+  //   CreateRoom(user.id, (key) => {
+  //     setChatKey(key);
+  //   });
+  // }, [user.id]);
 
-  // console.log(messageWidth);
+  socket.on("serverMessage", (data) => {
+    setMessages([
+      ...messages,
+      { message: data.msg, sender_id: data.sender_id }
+    ]);
+  });
 
-  const fakeArray = new Array(10).fill(0);
+  console.log(messages);
 
   return (
     <>
-      <Header
-        name={choosenFriend?.name ? choosenFriend.name : ""}
-        lastname={choosenFriend?.lastname ? choosenFriend.lastname : ""}
-        role={choosenFriend?.role ? choosenFriend.role : ""}
-      />
+      <Header onlineUsers={onlineUsers} />
       <main className="flex-1 px-16 flex flex-col overflow-auto pt-5 scrollbar-thin scrollbar-thumb-gray-700">
-        {fakeArray.map((_, idx) => {
-          return (
-            <div key={idx}>
-              {/* our message */}
-              <div className="flex flex-col items-end gap-3">
+        {messages.map((message, idx) => {
+          if (message.sender_id === user.id) {
+            return (
+              // our messages
+              <div className="flex flex-col items-end gap-3 my-2" key={idx}>
                 <div className="flex items-end gap-3">
                   <div
                     className={`w-[40rem] px-10 py-4 bg-gray-800 rounded-l-[60px] rounded-t-[60px]`}
                   >
-                    <span>
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Nemo unde vero inventore magnam rerum dolorem labore
-                      incidunt eveni
-                    </span>
+                    <span>{message.message}</span>
                   </div>
                   <div className="w-8 h-8 bg-gray-600 rounded"></div>
                 </div>
                 <div className="text-xs text-[#7f829e]">4:11 pm</div>
               </div>
-              {/*  */}
-
-              {/* friend message */}
-              <div className="flex flex-col gap-3">
+            );
+          } else {
+            return (
+              // another user messages
+              <div className="flex flex-col gap-3 my-2" key={idx}>
                 <div className="flex items-end gap-3">
                   <div className="w-8 h-8 bg-gray-600 rounded"></div>
                   <div
                     className={`w-[40rem] px-10 py-4 bg-indigo-500 rounded-r-[60px] rounded-t-[60px] text-white`}
                   >
-                    <span>
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Nemo unde vero inventore magnam rerum dolorem labore
-                      incidunt eveni
-                    </span>
+                    <span>{message.message}</span>
                   </div>
                 </div>
                 <div className="text-xs text-[#7f829e]">4:11 pm</div>
               </div>
-              {/*  */}
-            </div>
-          );
+            );
+          }
         })}
       </main>
-      <Footer />
+      <Footer Submit={(e, text) => Submit(e, text)} />
     </>
   );
 }

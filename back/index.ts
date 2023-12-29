@@ -1,23 +1,75 @@
 import express, { Express, Request, Response } from "express";
 
+const app: Express = express();
+
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-const app: Express = express();
-
 const mysql = require("mysql");
 const MySQLStore = require("express-mysql-session")(session);
 
-// database connection
+const { instrument } = require("@socket.io/admin-ui");
+const { Server } = require("socket.io");
+const http = require("http");
+const server = http.createServer(app);
+
+////////////////////////////////////////SOCKET IO////////////////////////////////////////
+
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:3000", "https://admin.socket.io"],
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+let onlineUsers: { user_id: number; socket_id: string }[] = [];
+
+io.on("connection", (socket: any) => {
+  // check if user is online
+  socket.on("userConnected", (data: { new_connected_user_id: number }) => {
+    if (
+      !onlineUsers.some((user) => user.user_id === data.new_connected_user_id)
+    ) {
+      onlineUsers.push({
+        user_id: data.new_connected_user_id,
+        socket_id: socket.id
+      });
+    }
+
+    io.emit("getOnlineUsersId", onlineUsers);
+  });
+
+  socket.on("disconnect", () => {
+    onlineUsers = [
+      ...onlineUsers.filter((user) => user.socket_id !== socket.id)
+    ];
+
+    io.emit("getOnlineUsersId", onlineUsers);
+  });
+  //
+
+  // chat
+  socket.on("clientMessage", (data: { msg: string; room: string }) => {
+    io.emit("serverMessage", { ...data });
+  });
+  //
+});
+
+instrument(io, {
+  auth: false
+});
+
+//////////////////////////////////////DATABASE CONNECTION//////////////////////////////////////
+
 export const db = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "",
   database: "chatty"
 });
-//
 
 export const sessionStore = new MySQLStore(
   {
@@ -35,7 +87,8 @@ export const sessionStore = new MySQLStore(
   db
 );
 
-// middleware
+//////////////////////////////////////////MIDDLEWARE////////////////////////////////////////////
+
 app.use(express.json());
 app.use(
   cors({
@@ -58,7 +111,8 @@ app.use(
     }
   })
 );
-//
+
+//////////////////////////////////////////REQUESTS////////////////////////////////////////////
 
 app.post("/sign_up", (req: Request, res: Response) => {
   // if this is a new user, insert its inf to database
@@ -94,34 +148,20 @@ app.post("/log_in", (req: Request, res: Response) => {
   );
 });
 
-app.post("/add_to_friend", (req: Request, res: Response) => {
-  const { user_id, friend_id } = req.body;
-
+app.get("/user", (req: Request, res: Response) => {
+  // get all users except logged in user
   db.query(
-    "INSERT INTO `friends` (`user_id`, `friend_id`) VALUES (?, ?)",
-    [user_id, friend_id],
-    (error: Error) => {
+    "SELECT id, name, lastname, email, avatar, role FROM users WHERE hash_key = ?",
+    [req.session?.user_key],
+    (error: Error, result: any) => {
       if (error) return res.status(500).send("Server error occur :(");
-
-      db.query(
-        "INSERT INTO `friends` (`user_id`, `friend_id`) VALUES (?, ?)",
-        [friend_id, user_id],
-        (error: Error) => {
-          if (error) return res.status(500).send("Server error occur :(");
-        }
-      );
-
-      return res.status(200).send("User added!");
+      return res.status(200).json(result);
     }
   );
 });
 
-// check if user is logged in and has a session
 app.get("/session_status", (req: Request, res: Response) => {
-  console.log(req.session);
-
   if (req.session?.user_key) {
-    // if has show status code and message
     return res.json({
       status: 200,
       message: "Logged!"
@@ -138,36 +178,12 @@ app.get("/users", (req: Request, res: Response) => {
     [req.session?.user_key],
     (error: Error, result: any) => {
       if (error) return res.status(500).send("Server error occur :(");
+
       return res.status(200).json(result);
     }
   );
 });
 
-app.get("/user", (req: Request, res: Response) => {
-  // get all users except logged in user
-  db.query(
-    "SELECT id, name, lastname, email, avatar, role FROM users WHERE hash_key = ?",
-    [req.session?.user_key],
-    (error: Error, result: any) => {
-      if (error) return res.status(500).send("Server error occur :(");
-      return res.status(200).json(result);
-    }
-  );
-});
-
-app.get("/friends", (req: Request, res: Response) => {
-  const { user_id } = req.query;
-
-  db.query(
-    "SELECT `name`, `lastname`, `email`, `role`, `avatar`, `friend_id` FROM users JOIN friends ON users.id = friends.friend_id WHERE friends.user_id = ?",
-    [user_id],
-    (error: Error, result: any) => {
-      if (error) return res.status(500).send(error);
-      return res.status(200).json(result);
-    }
-  );
-});
-
-app.listen(2000, () => {
+server.listen(2000, () => {
   console.log(`Server is running at http://localhost:${2000}`);
 });
