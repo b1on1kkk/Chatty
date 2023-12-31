@@ -4,15 +4,15 @@ MySQL database (phpmyadmin), Next TS + React TS, Node JS + Express JS, tailwind,
 
 ## Application screen shots
 
-# Log in:
+Log in:
 
 ![image](https://github.com/b1on1kkk/Chatty/assets/114521829/671a3662-9086-4ca8-92f4-6758ee1ecf25)
 
-# Sign up:
+Sign up:
 
 ![image](https://github.com/b1on1kkk/Chatty/assets/114521829/0f75c035-e161-4d84-81b2-ff589faf08c2)
 
-# Chats:
+Chats:
 
 ![image](https://github.com/b1on1kkk/Chatty/assets/114521829/d50f5f63-08cc-44ac-91e4-90847f77ab4b)
 
