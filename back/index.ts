@@ -52,11 +52,18 @@ io.on("connection", (socket: any) => {
   });
   //
 
-  // chat
-  socket.on("clientMessage", (data: { msg: string; room: string }) => {
-    io.emit("serverMessage", { ...data });
+  socket.on("privateMessage", (data: { text: string; user_id: number }) => {
+    const findSocket = onlineUsers.find(
+      (user) => user.user_id === data.user_id
+    );
+
+    if (findSocket) {
+      io.to(findSocket.socket_id).to(socket.id).emit("privateServerMessage", {
+        text: data.text,
+        sender_id: data.user_id
+      });
+    }
   });
-  //
 });
 
 instrument(io, {
